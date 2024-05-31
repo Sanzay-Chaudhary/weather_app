@@ -16,6 +16,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final WeatherService _weatherService = WeatherService();
   String _city = "Bhairahawa";
   Map<String, dynamic>? _currentWeather;
+  bool _noResultsFound = false;
   @override
   void initState() {
     super.initState();
@@ -26,12 +27,24 @@ class _HomeScreenState extends State<HomeScreen> {
     try {
       final weatherData =
           await _weatherService.fetchCurrentWeather(city ?? _city);
-      setState(() {
-        _city = city ?? _city;
-        _currentWeather = weatherData;
-        searchController.clear();
-      });
+      if (weatherData.isNotEmpty) {
+        setState(() {
+          _city = city ?? _city;
+          _currentWeather = weatherData;
+          _noResultsFound = false;
+          searchController.clear();
+        });
+      } else {
+        setState(() {
+          _currentWeather = null;
+          _noResultsFound = true;
+        });
+      }
     } catch (e) {
+      setState(() {
+        _currentWeather = null;
+        _noResultsFound = true;
+      });
       print(e);
     }
   }
