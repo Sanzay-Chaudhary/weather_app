@@ -1,3 +1,4 @@
+//This model classes will represent the weather data
 class Weather {
   final String cityName;
   final double temperature;

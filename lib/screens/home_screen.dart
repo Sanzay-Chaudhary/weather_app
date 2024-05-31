@@ -1,10 +1,9 @@
 import 'dart:ui';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:weather_app/services/weather_service.dart';
+import 'package:provider/provider.dart';
+import 'package:weather_app/controller/weather_provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -15,40 +14,13 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   TextEditingController searchController = TextEditingController();
-  final WeatherService _weatherService = WeatherService();
-  String _city = "Bhairahawa";
-  Map<String, dynamic>? _currentWeather;
-  bool _noResultsFound = false;
+
   @override
   void initState() {
     super.initState();
-    _fetchWeather();
-  }
-
-  Future<void> _fetchWeather([String? city]) async {
-    try {
-      final weatherData =
-          await _weatherService.fetchCurrentWeather(city ?? _city);
-      if (weatherData.isNotEmpty) {
-        setState(() {
-          _city = city ?? _city;
-          _currentWeather = weatherData;
-          _noResultsFound = false;
-          searchController.clear();
-        });
-      } else {
-        setState(() {
-          _currentWeather = null;
-          _noResultsFound = true;
-        });
-      }
-    } catch (e) {
-      setState(() {
-        _currentWeather = null;
-        _noResultsFound = true;
-      });
-      print(e);
-    }
+    final weatherProvider =
+        Provider.of<WeatherProvider>(context, listen: false);
+    weatherProvider.fetchWeather("Bhairahawa");
   }
 
   @override
@@ -66,20 +38,26 @@ class _HomeScreenState extends State<HomeScreen> {
                   hintStyle: TextStyle(color: Colors.black),
                   border: InputBorder.none,
                 ),
-                onSubmitted: _fetchWeather,
+                onSubmitted: (value) {
+                  Provider.of<WeatherProvider>(context, listen: false)
+                      .fetchWeather(value);
+                },
               ),
             ),
             IconButton(
               icon: const Icon(Icons.search),
               onPressed: () {
-                _fetchWeather(searchController.text);
+                Provider.of<WeatherProvider>(context, listen: false)
+                    .fetchWeather(searchController.text);
               },
             ),
           ],
         ),
       ),
-      body: _currentWeather == null
-          ? Container(
+      body: Consumer<WeatherProvider>(
+        builder: (context, weatherProvider, child) {
+          if (weatherProvider.loading) {
+            return Container(
               decoration: const BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
@@ -97,8 +75,13 @@ class _HomeScreenState extends State<HomeScreen> {
                   color: Colors.white,
                 ),
               ),
-            )
-          : Container(
+            );
+          } else if (weatherProvider.noResultsFound ||
+              weatherProvider.currentWeather == null) {
+            return const Center(child: Text("No results found"));
+          } else {
+            final weather = weatherProvider.currentWeather!;
+            return Container(
               padding: const EdgeInsets.all(20),
               decoration: const BoxDecoration(
                 gradient: LinearGradient(
@@ -118,7 +101,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     height: 10,
                   ),
                   Text(
-                    _city,
+                    weather.cityName,
                     style: GoogleFonts.lato(
                         fontSize: 36,
                         color: Colors.white,
@@ -131,20 +114,20 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Column(
                       children: [
                         Image.network(
-                          "http:${_currentWeather!['current']['condition']['icon']}",
+                          weather.iconUrl,
                           height: 100,
                           width: 100,
                           fit: BoxFit.cover,
                         ),
                         Text(
-                          '${_currentWeather!['current']['temp_c'].round()}°C',
+                          '${weather.temperature.round()}°C',
                           style: GoogleFonts.lato(
                               fontSize: 40,
                               color: Colors.white,
                               fontWeight: FontWeight.bold),
                         ),
                         Text(
-                          '${_currentWeather!['current']['condition']['text']}',
+                          weather.description,
                           style: GoogleFonts.lato(
                               fontSize: 40,
                               color: Colors.white,
@@ -157,14 +140,14 @@ class _HomeScreenState extends State<HomeScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             Text(
-                              'Max: ${_currentWeather!['forecast']['forecastday'][0]['day']['maxtemp_c'].round()}°C',
+                              'Max: ${weather.maxTemp.round()}°C',
                               style: GoogleFonts.lato(
                                   fontSize: 22,
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold),
                             ),
                             Text(
-                              'Min: ${_currentWeather!['forecast']['forecastday'][0]['day']['mintemp_c'].round()}°C',
+                              'Min: ${weather.minTemp.round()}°C',
                               style: GoogleFonts.lato(
                                   fontSize: 22,
                                   color: Colors.white70,
@@ -182,15 +165,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       _buildWeatherDetail(
-                          'Sunrise',
-                          Icons.wb_sunny,
-                          _currentWeather!['forecast']['forecastday'][0]
-                              ['astro']['sunrise']),
+                          'Sunrise', Icons.wb_sunny, weather.sunrise),
                       _buildWeatherDetail(
-                          'Sunset',
-                          Icons.brightness_3,
-                          _currentWeather!['forecast']['forecastday'][0]
-                              ['astro']['sunset']),
+                          'Sunset', Icons.brightness_3, weather.sunset),
                     ],
                   ),
                   const SizedBox(
@@ -199,15 +176,18 @@ class _HomeScreenState extends State<HomeScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      _buildWeatherDetail('Humidity', Icons.opacity,
-                          _currentWeather!['current']['humidity']),
+                      _buildWeatherDetail(
+                          'Humidity', Icons.opacity, '${weather.humidity}%'),
                       _buildWeatherDetail('Wind(KPH)', Icons.wind_power,
-                          _currentWeather!['current']['wind_kph']),
+                          '${weather.windSpeed}'),
                     ],
                   ),
                 ],
               ),
-            ),
+            );
+          }
+        },
+      ),
     );
   }
 
