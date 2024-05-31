@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:weather_app/services/weather_service.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -49,8 +50,63 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
               ),
+              child: const Center(
+                child: CircularProgressIndicator(
+                  color: Colors.white,
+                ),
+              ),
             )
-          : Container(),
+          : Container(
+              padding: const EdgeInsets.all(20),
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Color(0xFF1A2344),
+                    Color.fromARGB(255, 125, 32, 142),
+                    Colors.purple,
+                    Color.fromARGB(255, 151, 44, 170),
+                  ],
+                ),
+              ),
+              child: ListView(
+                children: [
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Text(
+                    _city,
+                    style: GoogleFonts.lato(
+                        fontSize: 36,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Center(
+                    child: Column(
+                      children: [
+                        Image.network(
+                          "http:${_currentWeather!['current']['condition']['icon']}",
+                          height: 100,
+                          width: 100,
+                          fit: BoxFit.cover,
+                        ),
+                        Text(
+                          '${_currentWeather!['current']['temp_c'].round()}°C',
+                          style: GoogleFonts.lato(
+                              fontSize: 40,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
     );
   }
 }
