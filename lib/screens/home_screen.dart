@@ -14,7 +14,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   TextEditingController searchController = TextEditingController();
   final WeatherService _weatherService = WeatherService();
-  final String _city = "Bhairahawa";
+  String _city = "Bhairahawa";
   Map<String, dynamic>? _currentWeather;
   @override
   void initState() {
@@ -27,7 +27,9 @@ class _HomeScreenState extends State<HomeScreen> {
       final weatherData =
           await _weatherService.fetchCurrentWeather(city ?? _city);
       setState(() {
+        _city = city ?? _city;
         _currentWeather = weatherData;
+        searchController.clear();
       });
     } catch (e) {
       print(e);
@@ -38,7 +40,28 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Weather App"),
+        title: Row(
+          children: [
+            Expanded(
+              child: TextField(
+                controller: searchController,
+                style: const TextStyle(color: Colors.black),
+                decoration: const InputDecoration(
+                  hintText: "Enter city name",
+                  hintStyle: TextStyle(color: Colors.black),
+                  border: InputBorder.none,
+                ),
+                onSubmitted: _fetchWeather,
+              ),
+            ),
+            IconButton(
+              icon: const Icon(Icons.search),
+              onPressed: () {
+                _fetchWeather(searchController.text);
+              },
+            ),
+          ],
+        ),
       ),
       body: _currentWeather == null
           ? Container(
