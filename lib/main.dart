@@ -3,10 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:weather_app/controller/weather_provider.dart';
 import 'package:weather_app/views/home_screen.dart';
 
-// void main() {
-//   runApp(const MyApp());
-// }
-
 void main() {
   runApp(
     const MyApp(),
