@@ -14,7 +14,7 @@ class WeatherProvider extends ChangeNotifier {
   bool get loading => _loading;
   bool get noResultsFound => _noResultsFound;
 
-//asynchronous method to fetch weather data for a given city name.
+// method to fetch weather data for a given city name.
   Future<void> fetchWeather(String cityName) async {
     _loading = true; //to indicate that data loading has started.
     _noResultsFound = false; //before new data fetching
