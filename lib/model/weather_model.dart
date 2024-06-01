@@ -11,7 +11,7 @@ class Weather {
   final int humidity;
   final double windSpeed;
 
-//initializes all the properties of the class using the values passed to it
+//This constructor initializes all the properties of the class using the values passed to it
   Weather({
     required this.cityName,
     required this.temperature,
