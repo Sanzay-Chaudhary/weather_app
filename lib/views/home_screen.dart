@@ -45,7 +45,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 onSubmitted: (value) {
                   Provider.of<WeatherProvider>(context, listen: false)
                       .fetchWeather(value);
-                  searchController.clear();
+                  searchController
+                      .clear(); //clear the text after search icon is pressed
                 },
               ),
             ),
