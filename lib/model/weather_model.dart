@@ -11,6 +11,7 @@ class Weather {
   final int humidity;
   final double windSpeed;
 
+//initializes all the properties of the class using the values passed to it
   Weather({
     required this.cityName,
     required this.temperature,
@@ -24,6 +25,7 @@ class Weather {
     required this.windSpeed,
   });
 
+// extracts the relevant fields from the JSON and assigns them to the corresponding properties of the Weather class.
   factory Weather.fromJson(Map<String, dynamic> json) {
     return Weather(
       cityName: json['location']['name'],
