@@ -20,7 +20,7 @@ class WeatherService {
       final Map<String, dynamic> data = json.decode(response
           .body); //parses the JSON response body into a Dart Map object.
 
-      //converts the parsed JSON data into a Weather object using the Weather.fromJson constructor.
+      //converts parsed JSON data into a Weather object using the Weather.fromJson constructor.
       return Weather.fromJson(data);
     } else {
       throw Exception('Failed to load weather data');
