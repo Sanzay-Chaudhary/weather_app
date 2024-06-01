@@ -18,7 +18,7 @@ class WeatherProvider extends ChangeNotifier {
   Future<void> fetchWeather(String cityName) async {
     _loading = true; //to indicate that data loading has started.
     _noResultsFound = false; //before new data fetching
-    notifyListeners();
+    notifyListeners(); //notify listeners(ui)
 
     try {
       _currentWeather = await _weatherService.fetchCurrentWeather(cityName);
