@@ -2,8 +2,6 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:weather_app/views/home_screen.dart';
-
 Widget buildWeatherDetail(String label, IconData icon, dynamic value) {
   return Padding(
     padding: const EdgeInsets.symmetric(horizontal: 10),

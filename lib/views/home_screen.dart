@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:weather_app/controller/weather_provider.dart';
+import 'package:weather_app/views/forecast_screen.dart';
 import 'package:weather_app/widgets/weather_detail.dart';
 
 // import 'package:weather_app/widgets/weather_detail.dart';
@@ -189,6 +190,25 @@ class _HomeScreenState extends State<HomeScreen> {
                           '${weather.windSpeed}'),
                     ],
                   ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Center(
+                    child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.blue),
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const ForecastScreen(),
+                              ));
+                        },
+                        child: const Text(
+                          "Next 7 days Forecast",
+                          style: TextStyle(color: Colors.white),
+                        )),
+                  )
                 ],
               ),
             );
