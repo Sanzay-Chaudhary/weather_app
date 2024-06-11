@@ -5,12 +5,10 @@ import 'package:weather_app/controller/weather_provider.dart';
 import 'package:weather_app/views/forecast_screen.dart';
 import 'package:weather_app/widgets/weather_detail.dart';
 
-// import 'package:weather_app/widgets/weather_detail.dart';
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
   _HomeScreenState createState() => _HomeScreenState();
 }
 
@@ -24,7 +22,7 @@ class _HomeScreenState extends State<HomeScreen> {
     Future.delayed(Duration.zero, () {
       final weatherProvider =
           Provider.of<WeatherProvider>(context, listen: false);
-      weatherProvider.fetchWeather("Bhairahawa");
+      weatherProvider.fetchWeather("Kathmandu");
     });
   }
 
@@ -46,8 +44,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 onSubmitted: (value) {
                   Provider.of<WeatherProvider>(context, listen: false)
                       .fetchWeather(value);
-                  searchController
-                      .clear(); //clear the text after search icon is pressed
+                  // searchController
+                  //     .clear(); //clear the text after search icon is pressed
                 },
               ),
             ),
@@ -64,7 +62,6 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Consumer<WeatherProvider>(
         builder: (context, weatherProvider, child) {
           if (weatherProvider.loading) {
-            //return const Center(child: CircularProgressIndicator());
             return Container(
               decoration: const BoxDecoration(
                 gradient: LinearGradient(
@@ -195,19 +192,27 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   Center(
                     child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.blue),
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const ForecastScreen(),
-                              ));
-                        },
-                        child: const Text(
-                          "Next 7 days Forecast",
-                          style: TextStyle(color: Colors.white),
-                        )),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue,
+                      ),
+                      onPressed: () {
+                        final cityName = searchController.text.isNotEmpty
+                            ? searchController.text
+                            : "Kathmandu";
+
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                ForecastScreen(cityName: cityName),
+                          ),
+                        );
+                      },
+                      child: const Text(
+                        "Next 7 days Forecast",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
                   )
                 ],
               ),

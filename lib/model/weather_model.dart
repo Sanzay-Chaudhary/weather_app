@@ -1,4 +1,3 @@
-//This model classes will represent the weather data
 class Weather {
   final String cityName;
   final double temperature;
@@ -10,8 +9,8 @@ class Weather {
   final String sunset;
   final int humidity;
   final double windSpeed;
+  final DateTime date;
 
-//This constructor initializes all the properties of the class using the values passed to it.
   Weather({
     required this.cityName,
     required this.temperature,
@@ -23,21 +22,75 @@ class Weather {
     required this.sunset,
     required this.humidity,
     required this.windSpeed,
+    required this.date,
   });
 
-// extracts the relevant fields from the JSON and assigns them to the corresponding properties of the Weather class.
   factory Weather.fromJson(Map<String, dynamic> json) {
     return Weather(
-      cityName: json['location']['name'],
-      temperature: json['current']['temp_c'],
-      description: json['current']['condition']['text'],
-      iconUrl: "http:${json['current']['condition']['icon']}",
-      maxTemp: json['forecast']['forecastday'][0]['day']['maxtemp_c'],
-      minTemp: json['forecast']['forecastday'][0]['day']['mintemp_c'],
-      sunrise: json['forecast']['forecastday'][0]['astro']['sunrise'],
-      sunset: json['forecast']['forecastday'][0]['astro']['sunset'],
-      humidity: json['current']['humidity'],
-      windSpeed: json['current']['wind_kph'],
+      cityName: json['location'] != null && json['location']['name'] != null
+          ? json['location']['name']
+          : '',
+      temperature: json['current'] != null && json['current']['temp_c'] != null
+          ? json['current']['temp_c'].toDouble()
+          : 0.0,
+      description: json['current'] != null &&
+              json['current']['condition'] != null &&
+              json['current']['condition']['text'] != null
+          ? json['current']['condition']['text']
+          : '',
+      iconUrl: json['current'] != null &&
+              json['current']['condition'] != null &&
+              json['current']['condition']['icon'] != null
+          ? "http:${json['current']['condition']['icon']}"
+          : '',
+      maxTemp: json['forecast'] != null &&
+              json['forecast']['forecastday'] != null &&
+              json['forecast']['forecastday'][0]['day'] != null &&
+              json['forecast']['forecastday'][0]['day']['maxtemp_c'] != null
+          ? json['forecast']['forecastday'][0]['day']['maxtemp_c'].toDouble()
+          : 0.0,
+      minTemp: json['forecast'] != null &&
+              json['forecast']['forecastday'] != null &&
+              json['forecast']['forecastday'][0]['day'] != null &&
+              json['forecast']['forecastday'][0]['day']['mintemp_c'] != null
+          ? json['forecast']['forecastday'][0]['day']['mintemp_c'].toDouble()
+          : 0.0,
+      sunrise: json['forecast'] != null &&
+              json['forecast']['forecastday'] != null &&
+              json['forecast']['forecastday'][0]['astro'] != null &&
+              json['forecast']['forecastday'][0]['astro']['sunrise'] != null
+          ? json['forecast']['forecastday'][0]['astro']['sunrise']
+          : '',
+      sunset: json['forecast'] != null &&
+              json['forecast']['forecastday'] != null &&
+              json['forecast']['forecastday'][0]['astro'] != null &&
+              json['forecast']['forecastday'][0]['astro']['sunset'] != null
+          ? json['forecast']['forecastday'][0]['astro']['sunset']
+          : '',
+      humidity: json['current'] != null && json['current']['humidity'] != null
+          ? json['current']['humidity']
+          : 0,
+      windSpeed: json['current'] != null && json['current']['wind_kph'] != null
+          ? json['current']['wind_kph'].toDouble()
+          : 0.0,
+      date: DateTime.now(),
+    );
+  }
+
+  factory Weather.fromForecastJson(Map<String, dynamic> json, String cityName) {
+    return Weather(
+      cityName: cityName, // Pass the city name here
+      temperature: (json['day']?['avgtemp_c'] ?? 0.0).toDouble(),
+      description: json['day']?['condition']?['text'] ?? '',
+      iconUrl: "http:${json['day']?['condition']?['icon'] ?? ''}",
+      maxTemp: (json['day']?['maxtemp_c'] ?? 0.0).toDouble(),
+      minTemp: (json['day']?['mintemp_c'] ?? 0.0).toDouble(),
+      sunrise: json['astro']?['sunrise'] ?? '',
+      sunset: json['astro']?['sunset'] ?? '',
+      humidity: 0, // Average humidity not provided in forecast JSON structure
+      windSpeed:
+          0.0, // Average wind speed not provided in forecast JSON structure
+      date: DateTime.parse(json['date']),
     );
   }
 }
