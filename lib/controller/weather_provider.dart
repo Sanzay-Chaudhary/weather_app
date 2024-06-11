@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:weather_app/model/weather_model.dart';
 import 'package:weather_app/services/weather_service.dart';
 
+//weather provider for storing weather data
 class WeatherProvider extends ChangeNotifier {
   final WeatherService _weatherService = WeatherService();
   Weather? _currentWeather;
