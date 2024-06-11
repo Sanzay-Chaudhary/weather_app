@@ -29,8 +29,6 @@ class _ForecastScreenState extends State<ForecastScreen> {
       ),
       body: Consumer<WeatherProvider>(
         builder: (context, weatherProvider, _) {
-          // if (weatherProvider.loading) {
-          // return const Center(child: CircularProgressIndicator());
           if (weatherProvider.loading) {
             return Container(
               decoration: const BoxDecoration(
@@ -58,20 +56,60 @@ class _ForecastScreenState extends State<ForecastScreen> {
               itemCount: weatherProvider.forecastWeather!.length,
               itemBuilder: (context, index) {
                 final forecastData = weatherProvider.forecastWeather![index];
-                return ListTile(
-                  title: Text('City: ${forecastData.cityName}'),
-                  subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                          'Date: ${forecastData.date.toLocal().toString().split(' ')[0]}'),
-                      Text('Temperature: ${forecastData.temperature}°C'),
-                      Text('Max Temp: ${forecastData.maxTemp}°C'),
-                      Text('Min Temp: ${forecastData.minTemp}°C'),
-                      Text('Description: ${forecastData.description}'),
-                      Text('Sunrise: ${forecastData.sunrise}'),
-                      Text('Sunset: ${forecastData.sunset}'),
-                    ],
+                return Container(
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Color(0xFF1A2344),
+                        Color.fromARGB(255, 125, 32, 142),
+                        Colors.purple,
+                        Color.fromARGB(255, 151, 44, 170),
+                      ],
+                    ),
+                  ),
+                  child: ListTile(
+                    leading: Image.network(
+                      forecastData.iconUrl,
+                      height: 100,
+                      width: 100,
+                      fit: BoxFit.cover,
+                    ),
+                    title: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Date: ${forecastData.date.toLocal().toString().split(' ')[0]}',
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                        Text(
+                          'Temperature: ${forecastData.temperature}°C',
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                        Text(
+                          'Max Temp: ${forecastData.maxTemp}°C',
+                          textAlign: TextAlign.right,
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                        Text(
+                          'Min Temp: ${forecastData.minTemp}°C',
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                        Text(
+                          'Description: ${forecastData.description}',
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                        Text(
+                          'Sunrise: ${forecastData.sunrise}',
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                        Text(
+                          'Sunset: ${forecastData.sunset}',
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                      ],
+                    ),
                   ),
                 );
               },
