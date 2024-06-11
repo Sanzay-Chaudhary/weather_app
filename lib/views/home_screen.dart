@@ -26,7 +26,6 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-//fetch current data
   @override
   Widget build(BuildContext context) {
     return Scaffold(
