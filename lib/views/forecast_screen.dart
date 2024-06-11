@@ -69,7 +69,6 @@ class _ForecastScreenState extends State<ForecastScreen> {
                       ],
                     ),
                   ),
-                  //List as tree
                   child: ListTile(
                     leading: Image.network(
                       forecastData.iconUrl,
