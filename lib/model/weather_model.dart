@@ -1,3 +1,4 @@
+//represent the structure of the weather data
 class Weather {
   final String cityName;
   final double temperature;
