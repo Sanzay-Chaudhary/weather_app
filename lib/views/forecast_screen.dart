@@ -29,8 +29,28 @@ class _ForecastScreenState extends State<ForecastScreen> {
       ),
       body: Consumer<WeatherProvider>(
         builder: (context, weatherProvider, _) {
+          // if (weatherProvider.loading) {
+          // return const Center(child: CircularProgressIndicator());
           if (weatherProvider.loading) {
-            return const Center(child: CircularProgressIndicator());
+            return Container(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Color(0xFF1A2344),
+                    Color.fromARGB(255, 125, 32, 142),
+                    Colors.purple,
+                    Color.fromARGB(255, 151, 44, 170),
+                  ],
+                ),
+              ),
+              child: const Center(
+                child: CircularProgressIndicator(
+                  color: Colors.white,
+                ),
+              ),
+            );
           } else if (weatherProvider.noResultsFound) {
             return const Center(child: Text('No results found.'));
           } else if (weatherProvider.forecastWeather != null) {
