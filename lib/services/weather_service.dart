@@ -5,7 +5,9 @@ import 'package:weather_app/model/weather_model.dart';
 //weather service to handle weather api
 class WeatherService {
   final String apiKey = "47d7bc01ca164a6699d15514243105";
+  // final String currentBaseUrl = "http://api.weatherapi.com/v1/current.json";
   final String forecastBaseUrl = "http://api.weatherapi.com/v1/forecast.json";
+  final String historyBaseUrl = "http://api.weatherapi.com/v1/history.json";
 
   Future<Weather> fetchCurrentWeather(String cityName) async {
     final url =
@@ -41,5 +43,30 @@ class WeatherService {
       throw Exception(
           'Failed to load 7-day forecast data: ${response.statusCode}');
     }
+  }
+
+  Future<List<Weather>> getHistoricalWeather(String cityName) async {
+    final encodedCityName = Uri.encodeComponent(cityName.trim());
+    List<Weather> historicalWeather = [];
+
+    for (int i = 0; i < 7; i++) {
+      DateTime date = DateTime.now().subtract(Duration(days: i + 1));
+      String dateString = date.toIso8601String().split('T').first;
+      final url =
+          '${historyBaseUrl.trim()}?key=${apiKey.trim()}&q=$encodedCityName&dt=$dateString';
+
+      final response = await http.get(Uri.parse(url));
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        final dayData = data['forecast']['forecastday'][0];
+        historicalWeather.add(Weather.fromForecastJson(dayData, cityName));
+      } else {
+        throw Exception(
+            'Failed to load historical weather data for $dateString: ${response.statusCode}');
+      }
+    }
+
+    return historicalWeather;
   }
 }

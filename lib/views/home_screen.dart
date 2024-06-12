@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:weather_app/controller/weather_provider.dart';
 import 'package:weather_app/views/forecast_screen.dart';
+import 'package:weather_app/views/previous_forecast_screen.dart';
 import 'package:weather_app/widgets/weather_detail.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -211,6 +212,33 @@ class _HomeScreenState extends State<HomeScreen> {
                       },
                       child: const Text(
                         "Next 7 days Forecast",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Center(
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue,
+                      ),
+                      onPressed: () {
+                        final cityName = searchController.text.isNotEmpty
+                            ? searchController.text
+                            : "Kathmandu";
+
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                PreviousForecastScreen(cityName: cityName),
+                          ),
+                        );
+                      },
+                      child: const Text(
+                        "Previous 7 days Forecast",
                         style: TextStyle(color: Colors.white),
                       ),
                     ),

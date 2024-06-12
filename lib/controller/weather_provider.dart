@@ -9,11 +9,13 @@ class WeatherProvider extends ChangeNotifier {
   bool _loading = false;
   bool _noResultsFound = false;
   List<Weather>? _forecastWeather;
+  List<Weather>? _historicalWeather;
 
   Weather? get currentWeather => _currentWeather;
   bool get loading => _loading;
   bool get noResultsFound => _noResultsFound;
   List<Weather>? get forecastWeather => _forecastWeather;
+  List<Weather>? get historicalWeather => _historicalWeather;
 
   Future<void> fetchWeather(String cityName) async {
     _loading = true;
@@ -43,6 +45,25 @@ class WeatherProvider extends ChangeNotifier {
     } catch (e) {
       print('Error fetching 7-day weather: $e');
       _forecastWeather = null;
+      _noResultsFound = true;
+    } finally {
+      _loading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> previous7dayWeather(String cityName) async {
+    _loading = true;
+    _noResultsFound = false;
+    notifyListeners();
+
+    try {
+      _historicalWeather = await _weatherService.getHistoricalWeather(cityName);
+      _noResultsFound =
+          _historicalWeather == null || _historicalWeather!.isEmpty;
+    } catch (e) {
+      print('Error fetching previous 7-day weather: $e');
+      _historicalWeather = null;
       _noResultsFound = true;
     } finally {
       _loading = false;
